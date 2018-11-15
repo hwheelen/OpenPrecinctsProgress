@@ -1,14 +1,26 @@
 import folium
 import geopandas as gpd
 
-prog_map = './Progress_Map.shp'
+directory = '/Users/hwheelen/Dropbox/Mahrud/OpenPrecinctsProgress/'
+prog_map = directory + 'Progress_11_15.shp'
 df =  gpd.read_file(prog_map)
-map = folium.Map(location=[df['LAT'].mean(),df['LON'].mean()],zoom_start=6,tiles='Mapbox bright')
+m = folium.Map(location=[48, -102], zoom_start=3, tiles='Mapbox bright')
+print(df.columns.values)
 
-df.columns.values
+m.choropleth(
+    geo_data=df,
+    columns=['COUNTYFP', 'progress'],
+    threshold_scale=[0,1,2,3,4,5],
+    fill_color='YlGn',
+    fill_opacity=0.7,
+    line_opacity=0.2,
+    legend_name='Progress'
+)
 
 
-map.save(outfile='map.html')
+folium.LayerControl().add_to(m)
+
+m.save(outfile=directory + 'map.html')
 # If you look inside the map.html source code you will see that Folium has been able to generate HTML,
 # Javascript and CSS and these three render the map on the browser.
 # You can serve this HTML as a static file  in a basic webserver,
